@@ -1,14 +1,10 @@
 import axios from 'axios';
-
-const metaApiUrl = document.head.querySelector('meta[name="api-url"]');
+import { allowedMethods, timeoutSec, headers, apiUrl } from '@/config/http';
 
 const ajax = axios.create({
-    baseURL: metaApiUrl ? metaApiUrl['content'] : '',
-    headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-    },
-    timeout: 30 * 1000
+    baseURL: apiUrl,
+    headers: headers,
+    timeout: timeoutSec * 1000
 });
 
 /**
@@ -18,7 +14,7 @@ const ajax = axios.create({
  * @param {object} payload 請求資料
  */
 export async function $http(method, url, payload = {}) {
-    if ([ 'HEAD', 'GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS' ].indexOf(method) < 0) {
+    if (allowedMethods.indexOf(method) < 0) {
         throw new Error(`Not Allowed Method: '${ method }'`);
     }
     try {
